@@ -12,5 +12,4 @@ public class Rock implements Serializable {
 		this.x = x;
 		this.y = y;
 	}
-
 }
