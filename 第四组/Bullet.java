@@ -5,16 +5,14 @@ import java.io.*;
 
 public class Bullet implements Serializable {
 	int bX, bY;
-	int bWidth, bHeight;
+	int bWidth = 50, bHeight = 50;
 	int speed = 5;
 	transient Image bimage;
 
-	public Bullet(int x, int y, int w, int h) {
+	public Bullet(int x, int y) {
 		super();
 		bX = x;
 		bY = y;
-		bWidth = w;
-		bHeight = h;
 	}
 
 	public void hit() {

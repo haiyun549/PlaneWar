@@ -6,7 +6,7 @@ import java.util.*;
 
 public class Accessory implements Serializable {
 	int aX, aY;
-	int aWidth, aHeight;
+	int aWidth = 50, aHeight = 50;
 	int speed = 1;
 	int typeint;
 	int life = 50;
@@ -19,8 +19,6 @@ public class Accessory implements Serializable {
 	public Accessory() {
 		aX = getRandomIntNum(50, 950);
 		aY = 30;
-		aWidth = 32;
-		aHeight = 32;
 		typeint = getRandomIntNum(0, 6);
 		if (typeint == 1)
 			aimage = 1;
@@ -36,17 +34,8 @@ public class Accessory implements Serializable {
 			aimage = 6;
 	}
 
-	public boolean hit(Bullet b) {
-		if ((aX < b.bX) && (b.bX < aX + aWidth) && (aY < b.bY) && (b.bY < aY + aHeight)) {
-			life -= 20;
-			return true;
-		} else
-			return false;
-
-	}
-
 	public boolean hit(Airplane p) {
-		if ((aX - +aWidth < p.pX) && (p.pX < aX + aWidth) && (aY < p.pY) && (p.pY < aY + aHeight)) {
+		if ((aX < p.pX + p.pWidth) && (p.pX < aX + aWidth) && (aY < p.pY + p.pHeight) && (p.pY < aY + aHeight)) {
 			life -= 30;
 			p.life -= 30;
 			return true;

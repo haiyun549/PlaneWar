@@ -4,9 +4,9 @@ import java.awt.geom.*;
 import java.io.*;
 import java.util.*;
 
-public class Airplane implements Serializable {
+public class Enemyplane implements Serializable {
 	int pX, pY;
-	int pWidth = 80, pHeight = 60;
+	int pWidth, pHeight;
 	int speed = 1;
 	int oil = 100, life = 100;
 	int Xoffset = 0;
@@ -18,24 +18,26 @@ public class Airplane implements Serializable {
 	static Image eplane1;
 	static Image eplane2;
 	//初始化飞机坐标、大小
-	public Airplane(int x, int y) {
+	public Enemyplane(int x, int y, int w, int h) {
 		super();
 		pX = x;
 		pY = y;
+		pWidth = w;
+		pHeight = h;
 	}
 
-	public Airplane() {
+	public Enemyplane() {
 		super();
 		pX = getRandomIntNum(50, 950);
 		pY = 50;
-		pWidth = 80;
-		pHeight = 60;
+		pWidth = 78;
+		pHeight = 68;
 		intervel = getRandomIntNum(0, 6);
 		eplane = 1;
 	}
 	//子弹撞击，生命减少
 	public boolean hit(Bullet b) {
-		if ((pX < b.bX + b.bWidth) && (b.bX < pX + pWidth) && (pY < b.bY + b.bHeight) && (b.bY < pY + pHeight)) {
+		if ((pX < b.bX) && (b.bX < pX + pWidth) && (pY < b.bY) && (b.bY < pY + pHeight)) {
 			life -= 20;
 			return true;
 		} else
@@ -43,8 +45,8 @@ public class Airplane implements Serializable {
 
 	}
 	//飞机撞击，生命减少
-	public boolean hit(Airplane p) {
-		if ((pX < p.pX + p.pWidth) && (p.pX < pX + pWidth) && (pY < p.pY + p.pHeight) && (p.pY < pY + pHeight)) {
+	public boolean hit(Enemyplane p) {
+		if ((pX - pWidth < p.pX) && (p.pX < pX + pWidth) && (pY < p.pY) && (p.pY < pY + pHeight)) {
 			life -= 20;
 			p.life -= 20;
 			return true;
@@ -54,7 +56,7 @@ public class Airplane implements Serializable {
 	}
 	//道具撞击，交互
 	public boolean hit(Accessory a) {
-		if ((pX < a.aX + a.aWidth) && (a.aX < pX + pWidth) && (pY < a.aY + a.aHeight) && (a.aY < pY + pHeight)) {
+		if ((pX < a.aX) && (a.aX < pX + pWidth) && (pY < a.aY) && (a.aY < pY + pHeight)) {
 			//加血
 			if (a.typeint == 1)
 				life += 100;
@@ -82,12 +84,12 @@ public class Airplane implements Serializable {
 				}
 			}
 			return true;
-		}else
+		} else
 			return false;
 	}
 
 	public boolean hit(Rock rock) {
-		if ((pX < rock.x + rock.width) && (rock.x < pX + pWidth) && (pY < rock.y + rock.height) && (rock.y < pY + pHeight)) {
+		if ((pX < rock.x) && (rock.x < pX + pWidth) && (pY < rock.y) && (rock.y < pY + pHeight)) {
 			life = -1;
 			return true;
 		} else

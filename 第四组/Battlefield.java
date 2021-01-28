@@ -74,11 +74,11 @@ public class Battlefield extends JFrame {
 	int level;
 	Image OffScreen1, OffScreen2, O2;
 	Graphics2D drawOffScreen1, drawOffScreen2, g;// 画框
-	Image myplane, eplane1, eplane2, bullet, explode, backgroud, a1, a2, a3, a4, a5, a6, gameoverimage, winimage,
-			rockImage;// 对象
+	Image myplane, eplane1, eplane2, bullet0, bullet1, bullet2, bullet3, explode, backgroud, a1, a2, a3, a4, a5, a6, gameoverimage, winimage,rockImage;
 	int key;
 	Airplane Controlplane;
-	ArrayList bulletsList;
+	ArrayList bulletsList0;
+	ArrayList bulletsList1;
 	ArrayList planeList;
 	ArrayList explodeList;
 	ArrayList accessoryList;
@@ -101,50 +101,38 @@ public class Battlefield extends JFrame {
 
 	Flag flag;
 
-	//////////////////////////// 改了位置，难度选择
+	//难度选择
 	class Startaction implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 			level = 0;
-//			while(level<1||level>10){
 			try {
-				JFrame frame = new JFrame("Level Choose");
+				JFrame frame = new JFrame("Theme Choose");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 关闭窗口
-				level = Integer.parseInt(JOptionPane.showInputDialog(frame, "Please choose the game level：1-10"));
+				level = Integer.parseInt(JOptionPane.showInputDialog(frame, "Please choose the theme：1-5"));
 				goon = true;
 				gameover = 0;
 				start.disable();
 				gamebegin();
 			} catch (Exception e) {
-//					continue;
 			}
-//			}
-//			goon = true;
-//			gameover = 0;
-//			start.disable();
-//			gamebegin();
-
 		}
 	}
 
-	////////////////////////////////////////////////////////////////// 战斗背景，初始化
+	// 战斗背景，初始化
 	public Battlefield() {
 		setTitle("～～～～～～～～～～～～ 欢迎收看我们组的面向对象作业：雷霆战机增强版！！～～～～～～～～～～～～～～～～～～～");
-//		setSize( 1000, 1900 );
-		OffScreen1 = new BufferedImage(1000, 900, BufferedImage.TYPE_INT_RGB);
+		OffScreen1 = new BufferedImage(1000, 850, BufferedImage.TYPE_INT_RGB);
 		drawOffScreen1 = (Graphics2D) OffScreen1.getGraphics();
-		OffScreen2 = new BufferedImage(1000, 900, BufferedImage.TYPE_INT_RGB);
+		OffScreen2 = new BufferedImage(1000, 850, BufferedImage.TYPE_INT_RGB);
 		drawOffScreen2 = (Graphics2D) OffScreen2.getGraphics();
 		flag = new Flag();
-		// 图片变量 飞机、道具、石头
-		myplane = getToolkit().getImage("Airplanes/tank.gif");
-		eplane1 = getToolkit().getImage("Airplanes/airplane3-1.gif");
-		eplane2 = getToolkit().getImage("Airplanes/airplane4.gif");
-		a1 = getToolkit().getImage("accessory/lives.gif");
-		a2 = getToolkit().getImage("accessory/box1.gif");
-		a3 = getToolkit().getImage("accessory/oil.gif");
-		a4 = getToolkit().getImage("accessory/Invincible.gif");
-		a5 = getToolkit().getImage("accessory/fireLevel.gif");
-		a6 = getToolkit().getImage("accessory/cleanscreen.gif");
+		// 图片变量道具、石头
+		a1 = getToolkit().getImage("accessory/lifeup.png");
+		a2 = getToolkit().getImage("accessory/bulletbox.png");
+		a3 = getToolkit().getImage("accessory/oilbox.png");
+		a4 = getToolkit().getImage("accessory/smaller.png");
+		a5 = getToolkit().getImage("accessory/fireup.png");
+		a6 = getToolkit().getImage("accessory/rockclear.png");
 		rockImage = getToolkit().getImage("rock/Small_Rock_Icon.png");
 		// 赋值
 		Accessory.aimage1 = a1;
@@ -153,31 +141,29 @@ public class Battlefield extends JFrame {
 		Accessory.aimage4 = a4;
 		Accessory.aimage5 = a5;
 		Accessory.aimage6 = a6;
-		Airplane.eplane1 = eplane1;
-		Airplane.eplane2 = eplane2;
 		// 图片变量 子弹、爆炸、失败、胜利
-		bullet = getToolkit().getImage("Bullets/Bullet2.gif");
-		explode = getToolkit().getImage("Bullets/explode.gif");
-		// backgroud = getToolkit().getImage("Backgrounds/sandroad.jpg");
-		gameoverimage = getToolkit().getImage("accessory/gameover.gif");
-		winimage = getToolkit().getImage("accessory/win.gif");
+		bullet0 = getToolkit().getImage("Bullets/enemybullet.png");
+		bullet1 = getToolkit().getImage("Bullets/mybullet.png");
+		explode = getToolkit().getImage("Bullets/break0.gif");
+		gameoverimage = getToolkit().getImage("accessory/gameover.png");
+		winimage = getToolkit().getImage("accessory/victory.png");
 
 		planeList = new ArrayList();
-		bulletsList = new ArrayList();
+		bulletsList0 = new ArrayList();
+		bulletsList1 = new ArrayList();
 		explodeList = new ArrayList();
 		accessoryList = new ArrayList();
 		rockList = new CopyOnWriteArrayList<Rock>();
 	}
 
 	public void gameperpare() {
-		Controlplane = new Airplane(500, 750, 80, 66);
-		//////////////////////////////////////////////// 飞机速度
+		Controlplane = new Airplane();
 		p2.addKeyListener(new MultiKeyPressListener());
 		m2 = new Scenemusic();
 	}
 
 	public void gamebegin() {
-		// 音乐
+		//初始化，随时间补充对象
 		TimerTask task = new TimerTask() {
 			public void run() {
 				hasAccessory = true;
@@ -195,6 +181,65 @@ public class Battlefield extends JFrame {
 		};
 		timer2 = new Timer();
 		timer2.schedule(task2, 3000, 3000);
+
+		// 选择游戏主题
+		Controlplane.pX = 500 - Controlplane.pWidth/2;
+		Controlplane.pY = 800-Controlplane.pHeight;
+		Controlplane.life = 300;
+		Controlplane.bulletnum = 300;
+		Controlplane.oil = 300;
+		Controlplane.speed = 15;
+
+		switch (level) {
+			case 1:
+				myplane = getToolkit().getImage("Airplanes/con01.png");
+				eplane1 = getToolkit().getImage("Airplanes/ep01.png");
+				eplane2 = getToolkit().getImage("Airplanes/ep02.png");
+				Airplane.eplane1 = eplane1;
+				Airplane.eplane2 = eplane2;
+				backgroud = getToolkit().getImage("Backgrounds/bg1.jpg");
+				break;
+			case 2:
+				myplane = getToolkit().getImage("Airplanes/con02.png");
+				eplane1 = getToolkit().getImage("Airplanes/ep03.png");
+				eplane2 = getToolkit().getImage("Airplanes/ep04.png");
+				Airplane.eplane1 = eplane1;
+				Airplane.eplane2 = eplane2;
+				backgroud = getToolkit().getImage("Backgrounds/bg2.jpg");
+				break;
+			case 3:
+				myplane = getToolkit().getImage("Airplanes/con03.png");
+				eplane1 = getToolkit().getImage("Airplanes/ep05.png");
+				eplane2 = getToolkit().getImage("Airplanes/ep06.png");
+				Airplane.eplane1 = eplane1;
+				Airplane.eplane2 = eplane2;
+				backgroud = getToolkit().getImage("Backgrounds/bg3.jpg");
+				break;
+			case 4:
+				myplane = getToolkit().getImage("Airplanes/con04.png");
+				eplane1 = getToolkit().getImage("Airplanes/ep07.png");
+				eplane2 = getToolkit().getImage("Airplanes/ep08.png");
+				Airplane.eplane1 = eplane1;
+				Airplane.eplane2 = eplane2;
+				backgroud = getToolkit().getImage("Backgrounds/bg4.jpg");
+				break;
+			case 5:
+				myplane = getToolkit().getImage("Airplanes/con05.png");
+				eplane1 = getToolkit().getImage("Airplanes/ep09.png");
+				eplane2 = getToolkit().getImage("Airplanes/ep10.png");
+				Airplane.eplane1 = eplane1;
+				Airplane.eplane2 = eplane2;
+				backgroud = getToolkit().getImage("Backgrounds/bg5.jpg");
+				break;
+			default:
+				myplane = getToolkit().getImage("Airplanes/con01.png");
+				eplane1 = getToolkit().getImage("Airplanes/ep01.png");
+				eplane2 = getToolkit().getImage("Airplanes/ep02.png");
+				Airplane.eplane1 = eplane1;
+				Airplane.eplane2 = eplane2;
+				backgroud = getToolkit().getImage("Backgrounds/bg1.jpg");
+				break;
+		}
 		// 加敌机
 		TimerTask task3 = new TimerTask() {
 			public void run() {
@@ -204,65 +249,25 @@ public class Battlefield extends JFrame {
 		timer3 = new Timer();
 		timer3.schedule(task3, 2000, 40000);
 
-		////////// 控制初始状态与选择level的关系
-		Controlplane.pX = 480;
-		Controlplane.pY = 700;
-		Controlplane.life = 100 * level;
-		Controlplane.bulletnum = 100 * level;
-		Controlplane.oil = 100 * level;
-		Controlplane.speed = 15;
-
-		switch (level) {
-		case 1:
-			backgroud = getToolkit().getImage("Backgrounds/sea2.jpg");
-			break;
-		case 2:
-			backgroud = getToolkit().getImage("Backgrounds/sandroad.jpg");
-			break;
-		case 3:
-			backgroud = getToolkit().getImage("Backgrounds/color.jpg");
-			break;
-		case 4:
-			backgroud = getToolkit().getImage("Backgrounds/nightsky.jpg");
-			break;
-		case 5:
-			backgroud = getToolkit().getImage("Backgrounds/beach.jpg");
-			break;
-		case 6:
-			backgroud = getToolkit().getImage("Backgrounds/sky.jpg");
-			break;
-		case 7:
-			backgroud = getToolkit().getImage("Backgrounds/city.jpg");
-			break;
-		case 8:
-			backgroud = getToolkit().getImage("Backgrounds/sea.jpg");
-			break;
-		case 9:
-			backgroud = getToolkit().getImage("Backgrounds/universe.jpg");
-			break;
-		case 10:
-			backgroud = getToolkit().getImage("Backgrounds/color.jpg");
-			break;
-		default:
-			backgroud = getToolkit().getImage("Backgrounds/sea2.jpg");
-			break;
-		}
-
 		g = (Graphics2D) this.p2.getGraphics();
 		planeList.clear();
-		bulletsList.clear();
+		bulletsList0.clear();
+		bulletsList1.clear();
 		explodeList.clear();
 		accessoryList.clear();
+		rockList.clear();
+		
 		// 加敌机
 		for (int i = 1; i <= 8; i++) {
-			Airplane p1 = new Airplane(90 * i, 50, 78, 68);
+			Airplane p1 = new Airplane(90 * i, 50);
 			planeList.add(p1);
 			p1.intervel = p1.getRandomIntNum(0, 6);
 			p1.eplane = 1;
 		}
+		
 		// 加石头
 		for (int i = 1; i <= 4; i++) {
-			Rock rock = new Rock(200 * i, 0, 100, 100);
+			Rock rock = new Rock(200 * i, 0);
 			rockList.add(rock);
 		}
 		p2.requestFocus();
@@ -276,35 +281,31 @@ public class Battlefield extends JFrame {
 
 	public void gameContrl(Graphics2D drawOffScreen) {
 		// 控制
-
-		// drawOffScreen.fillRect(0, 0, 1000, 900);
-		drawOffScreen.drawImage(backgroud, 0, 0, 1000, 900, 0, (int) backy, 360, 320 + (int) backy, null);
+		drawOffScreen.drawImage(backgroud, 0, 0, 1000, 2000, 0, (int) backy, 360, 320 + (int) backy, null);
 		// 石头运动、消失
 		for (Rock rock : rockList) {
 			rock.y += rock.speed;
 			if (rock.y > 900) {// 控制rock消失
 				rockList.remove(rock);
 			}
-//			rockList.add(new Rock(new Random().nextInt(1000), 0, 100, 100));
 		}
 		if (rockList.size() == 0) {
 			for (int i = 0; i < 4; i++) {
-				rockList.add(new Rock(new Random().nextInt(1000), 0, 100, 100));
+				rockList.add(new Rock(new Random().nextInt(1000), 0));
 			}
 		}
 		for (Rock rock : rockList) {
 			drawOffScreen.drawImage(rockImage, rock.x, rock.y, null);
 		}
 		backy -= .2;
-		// System.out.println((int)backy+"");
 		if (backy < 0)
 			backy = 638;
-		// drawOffScreen.drawImage(backgroud,0,0,1000,900,null);
-		if (addplane) {
+		if (addplane) {//定时器决定加飞机，如果需要加飞机
 			if (planeList.size() < 8)
 				planeList.add(new Airplane());
 			addplane = false;
 		}
+		
 		// 加敌机皮肤
 		Iterator pnums = planeList.iterator();
 		while (pnums.hasNext()) {
@@ -314,40 +315,25 @@ public class Battlefield extends JFrame {
 				drawOffScreen.drawImage(p.eplane1, p.pX, p.pY, null);
 			if (p.eplane == 2)
 				drawOffScreen.drawImage(p.eplane2, p.pX, p.pY, null);
-
 			// 发射子弹
 			if ((p.getRandomIntNum(0, 300)) == 2) {
-				Bullet b2 = new Bullet(p.pX + p.pWidth / 2 - 3, p.pY + p.pHeight, 13, 13);
+				Bullet b2 = new Bullet(p.pX + p.pWidth / 2 - 25, p.pY + p.pHeight);
 				b2.speed = -3;
-				bulletsList.add(b2);
+				bulletsList0.add(b2);
 			}
 			// 判断是否被击中?
-			Iterator bnums = bulletsList.iterator();
-			while (bnums.hasNext()) {
-				Bullet b = (Bullet) bnums.next();
+			Iterator bnums1 = bulletsList1.iterator();
+			while (bnums1.hasNext()) {
+				Bullet b = (Bullet) bnums1.next();
 				if (p.hit(b)) {
 					b = null;
-					bnums.remove();
+					bnums1.remove();
 					m2.hitclip.play();
 				}
-				;
 				// 判断是否撞击控制飞机
 				if (p.hit(Controlplane))
 					m2.explodeclip.play();
 			}
-			// 判断是否撞击附件
-			Iterator anums = accessoryList.iterator();
-			while (anums.hasNext()) {
-				Accessory a = (Accessory) anums.next();
-				if (p.hit(a)) {
-					a = null;
-					anums.remove();
-					m2.beepclip.stop();
-					m2.eatclip.play();
-				}
-				;
-			}
-
 			// 撞到石头
 			for (Rock rock : rockList) {
 				if (Controlplane.hit(rock)) {
@@ -356,12 +342,11 @@ public class Battlefield extends JFrame {
 			}
 
 			if (p.life < 0) {
-				explodeList.add(new Explode(p.pX, p.pY));
+				explodeList.add(new Explode(p.pX + p.pWidth/2 - 50, p.pY + p.pHeight/2 - 50));
 				p = null;
 				pnums.remove();
 				m2.explodeclip.play();
 			}
-			;
 		}
 		// 附件
 		if (hasAccessory) {
@@ -391,9 +376,7 @@ public class Battlefield extends JFrame {
 				anums.remove();
 				m2.beepclip.stop();
 				continue;
-				// t2.setText(Controlplane.life+"");
 			}
-			;
 			if (Controlplane.hit(a)) {
 				a = null;
 				anums.remove();
@@ -405,28 +388,7 @@ public class Battlefield extends JFrame {
 				t4.setText(Controlplane.speed + "");
 				t5.setText(Controlplane.pHeight + "*" + Controlplane.pWidth);
 				continue;
-				// t2.setText(Controlplane.life+"");
 			}
-			;
-			// 判断是否被击中?
-			Iterator bnums = bulletsList.iterator();
-			while (bnums.hasNext()) {
-				Bullet b = (Bullet) bnums.next();
-				if (a.hit(b)) {
-					b = null;
-					bnums.remove();
-					m2.hitclip.play();
-				}
-				;
-			}
-			if (a.life < 0) {
-				explodeList.add(new Explode(a.aX, a.aY));
-				a = null;
-				m2.beepclip.stop();
-				anums.remove();
-				m2.explodeclip.play();
-			}
-			;
 		}
 		// 撞到石头
 		for (Rock rock : rockList) {
@@ -438,30 +400,41 @@ public class Battlefield extends JFrame {
 		// 子弹
 		if (fire) {
 			//加子弹
-			bulletsList.add(new Bullet(Controlplane.pX + Controlplane.pWidth / 2 - 3, Controlplane.pY, 13, 13));
+			bulletsList1.add(new Bullet(Controlplane.pX + Controlplane.pWidth / 2 - 25, Controlplane.pY));
 			//加额外子弹
 			for (int i = 0; i < (Controlplane.fireLevel - 1) / 2; i++) {
-				bulletsList.add(
-						new Bullet(Controlplane.pX - Controlplane.pWidth / 2 * (i - 1) - 3, Controlplane.pY, 13, 13));
-				bulletsList.add(new Bullet(Controlplane.pX + Controlplane.pWidth / 2 * i - 3, Controlplane.pY, 13, 13));
+				bulletsList1.add(	new Bullet(Controlplane.pX - Controlplane.pWidth / 2 * (i - 1) - 25, Controlplane.pY));
+				bulletsList1.add(new Bullet(Controlplane.pX + Controlplane.pWidth / 2 * i - 25, Controlplane.pY));
 			}
 			fire = false;
 			t1.setText(Controlplane.bulletnum + "");
 		}
-
-		Iterator bnums = bulletsList.iterator();
-		while (bnums.hasNext()) {
-			Bullet b = (Bullet) bnums.next();
-			drawOffScreen.drawImage(bullet, b.bX, b.bY, null);
+		//controlplane绘制子弹
+		Iterator bnums1 = bulletsList1.iterator();
+		while (bnums1.hasNext()) {
+			Bullet b = (Bullet) bnums1.next();
+			drawOffScreen.drawImage(bullet1, b.bX, b.bY, null);
 			b.bY -= b.speed;
 			if ((b.bY < 0) || (b.bY > 900)) {
 				b = null;
-				bnums.remove();
+				bnums1.remove();
+				continue;
+			}
+		}
+		//enemyplane绘制子弹，击中controlplane
+		Iterator bnums0 = bulletsList0.iterator();
+		while (bnums0.hasNext()) {
+			Bullet b = (Bullet) bnums0.next();
+			drawOffScreen.drawImage(bullet0, b.bX, b.bY, null);
+			b.bY -= b.speed;
+			if ((b.bY < 0) || (b.bY > 900)) {
+				b = null;
+				bnums0.remove();
 				continue;
 			}
 			if ((Controlplane.hit(b))) {
 				b = null;
-				bnums.remove();
+				bnums0.remove();
 				m2.hitclip.play();
 				t1.setText(Controlplane.bulletnum + "");
 				t2.setText(Controlplane.life + "");
@@ -469,24 +442,22 @@ public class Battlefield extends JFrame {
 				t4.setText(Controlplane.speed + "");
 				t5.setText(Controlplane.pHeight + "*" + Controlplane.pWidth);
 			}
-			;
 		}
 		if (gameover == 0)
 			drawOffScreen.drawImage(myplane, Controlplane.pX, Controlplane.pY, null);
 		if (gameover == -1)
-			drawOffScreen.drawImage(gameoverimage, 500, 450, null);
+			drawOffScreen.drawImage(gameoverimage, 350, 350, null);
 		if (gameover == 1)
-			drawOffScreen.drawImage(winimage, 500, 450, null);
+			drawOffScreen.drawImage(winimage, 350, 350, null);
 
 		// 判断是否被击中?
 		if ((Controlplane.life < 0) || (Controlplane.oil < 0)) {
-			explodeList.add(new Explode(Controlplane.pX, Controlplane.pY));
+			explodeList.add(new Explode(Controlplane.pX + Controlplane.pWidth/2 - 50, Controlplane.pY + Controlplane.pHeight/2 - 50));
 			gameover = -1;
 			Controlplane.life = 0;
 			Controlplane.oil = 0;
 			m2.explodeclip.play();
 		}
-		;
 		// 判断是否胜利?
 		if (planeList.size() == 0)
 			gameover = 1;
@@ -505,9 +476,7 @@ public class Battlefield extends JFrame {
 				e = null;
 				enums.remove();
 			}
-			;
 		}
-		// g.drawImage(OffScreen1,0,0,this.p2);
 	}
 
 	class MultiKeyPressListener implements KeyListener {
@@ -521,16 +490,14 @@ public class Battlefield extends JFrame {
 		@Override
 		public synchronized void keyPressed(KeyEvent e) {
 			pressed.add(e.getKeyCode());
-//			key = e.getKeyCode();
 
 			// 控制按键
-//			if (key == KeyEvent.VK_RIGHT) {
 			if (pressed.contains(KeyEvent.VK_RIGHT)) {
-				if (Controlplane.pX < 1000 - Controlplane.pWidth)
+				if (Controlplane.pX <= 1000 - Controlplane.pWidth)
 					Controlplane.pX += Controlplane.speed;
 			}
 			if (pressed.contains(KeyEvent.VK_LEFT)) {
-				if (Controlplane.pX > 0)
+				if (Controlplane.pX >= 0)
 					Controlplane.pX -= Controlplane.speed;
 			}
 			if (pressed.contains(KeyEvent.VK_UP)) {
@@ -538,14 +505,15 @@ public class Battlefield extends JFrame {
 					Controlplane.pY -= Controlplane.speed;
 			}
 			if (pressed.contains(KeyEvent.VK_DOWN)) {
-				if (Controlplane.pY < 900 - Controlplane.pHeight)
+				if (Controlplane.pY <= 900 - Controlplane.pHeight)
 					Controlplane.pY += Controlplane.speed;
 			}
 			if (pressed.contains(KeyEvent.VK_SPACE)) {
-				if (Controlplane.bulletnum - Controlplane.fireLevel >= 0)
+				if (Controlplane.bulletnum - Controlplane.fireLevel >= 0) {
 					Controlplane.bulletnum -= Controlplane.fireLevel;
 					fire = true;
-				m2.gunshotclip.play();
+					m2.gunshotclip.play();
+				}
 			}
 			if (pressed.contains(KeyEvent.VK_1)) {
 				if (Controlplane.speed < 50) {
@@ -565,9 +533,6 @@ public class Battlefield extends JFrame {
 		public synchronized void keyReleased(KeyEvent e) {
 			pressed.remove(e.getKeyCode());
 		}
-
-//		public void keyReleased(KeyEvent e) {
-//		}
 	}
 
 	public static Font loadFont(String fontFileName, float fontSize) {
@@ -578,21 +543,12 @@ public class Battlefield extends JFrame {
 		} catch (Exception e)// 异常处理
 		{
 			return new java.awt.Font(Font.MONOSPACED, Font.BOLD, 14);
-//			return null;
 		}
 	}
 
 	// 选择初始状态
 	public void showcomponent() {
 		MenuBar m_MenuBar = new MenuBar();
-//		Menu menuFile = new Menu("文件"); // 创建菜单
-//		m_MenuBar.add(menuFile); // 将菜单加入菜单条
-//		MenuItem f1 = new MenuItem("打开"); // 创建各菜单项
-//		MenuItem f2 = new MenuItem("关闭");
-//		menuFile.add(f1); // 加入菜单
-//		menuFile.add(f2);
-//		setMenuBar(m_MenuBar);
-		//
 		p1 = new Panel();
 		add(p1, "North");
 		p1.setLayout(new GridLayout(1, 10));
@@ -618,11 +574,9 @@ public class Battlefield extends JFrame {
 		start.addActionListener(new Startaction());
 		save = new Button("Save");
 		p1.add(save, 12);
-//		save.addActionListener(new Startaction());
 		save.addActionListener(new Saveaction());
 		load = new Button("Load");
 		p1.add(load, 13);
-//		load.addActionListener(new Startaction());
 		load.addActionListener(new Loadaction());
 
 		//
@@ -634,13 +588,6 @@ public class Battlefield extends JFrame {
 			m_MenuBar.setFont(font);
 			p1.setFont(font);
 		}
-		/*
-		 * Choice ColorChooser = new Choice(); ColorChooser.add("Green");
-		 * ColorChooser.add("Red"); ColorChooser.add("Blue"); p.add(ColorChooser); t1 =
-		 * new TextField(3); p.add(t1); ColorChooser.addItemListener(new ItemListener(){
-		 * public void itemStateChanged(ItemEvent e){ String s= e.getItem().toString();
-		 * t1.setText(s);} });
-		 */
 	}
 
 	public static void main(String args[]) {
@@ -649,7 +596,6 @@ public class Battlefield extends JFrame {
 		f.setSize(1000, 900);
 		f.setVisible(true);
 		f.gameperpare();
-		// f.gamebegin();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
@@ -677,7 +623,6 @@ public class Battlefield extends JFrame {
 				g.drawImage(OffScreen2, 0, 0, Battlefield.this.p2);
 				flag.getf2end();
 			}
-//			System.out.println("Game Over");
 			timer.cancel();
 			timer = null;
 			timer2.cancel();
@@ -689,25 +634,6 @@ public class Battlefield extends JFrame {
 
 		}
 	}
-
-//	class Startaction implements ActionListener {
-//		public void actionPerformed(ActionEvent event) {
-//			level=0;
-//			while(level<1||level>10){
-//				try{
-//					level = Integer.parseInt(JOptionPane.showInputDialog( this,
-//		                     "请选择难度：1-10"));
-//				}catch(Exception e){
-//					continue;
-//				}
-//			}
-//			goon = true;
-//			gameover = 0;
-//			start.disable();
-//			gamebegin();
-//
-//		}
-//	}
 
 	class Saveaction implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
@@ -722,13 +648,13 @@ public class Battlefield extends JFrame {
 				oos = new ObjectOutputStream(new FileOutputStream("save/save.dat"));
 				oos.writeObject(Controlplane);
 				oos.writeObject(planeList);
-				oos.writeObject(bulletsList);
+				oos.writeObject(bulletsList0);
+				oos.writeObject(bulletsList1);
 				oos.writeObject(accessoryList);
 				oos.writeObject(explodeList);
 				oos.writeObject(rockList);
 				oos.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			d1.resume();
@@ -745,19 +671,17 @@ public class Battlefield extends JFrame {
 				ios = new ObjectInputStream(new FileInputStream("save/save.dat"));
 				Controlplane = (Airplane) ios.readObject();
 				planeList = (ArrayList) ios.readObject();
-				bulletsList = (ArrayList) ios.readObject();
+				bulletsList0 = (ArrayList) ios.readObject();
+				bulletsList1 = (ArrayList) ios.readObject();
 				accessoryList = (ArrayList) ios.readObject();
 				explodeList = (ArrayList) ios.readObject();
 				rockList = (CopyOnWriteArrayList<Rock>) ios.readObject();
 				ios.close();
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			TimerTask task = new TimerTask() {
@@ -808,7 +732,6 @@ public class Battlefield extends JFrame {
 				clip.loop();
 			} catch (Exception e) {
 			}
-			;
 		}
 	}
 
@@ -832,13 +755,6 @@ public class Battlefield extends JFrame {
 
 			} catch (Exception e) {
 			}
-			;
 		}
-		/*
-		 * public void run() { while (true) { if (gunshot_voice>0)
-		 * {gunshotclip.play();gunshot_voice--;}; if (explode_voice>0)
-		 * {explodeclip.play();explode_voice--;}; if (accessory_voice>0)
-		 * {beepclip.play(); accessory_voice--;}; } }
-		 */
 	}
 }
