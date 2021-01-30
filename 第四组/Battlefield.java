@@ -120,7 +120,7 @@ public class Battlefield extends JFrame {
 
 	// 战斗背景，初始化
 	public Battlefield() {
-		setTitle("～～～～～～～～～～～～ 欢迎收看我们组的面向对象作业：雷霆战机增强版！！～～～～～～～～～～～～～～～～～～～");
+		setTitle("Plane War");
 		OffScreen1 = new BufferedImage(1000, 850, BufferedImage.TYPE_INT_RGB);
 		drawOffScreen1 = (Graphics2D) OffScreen1.getGraphics();
 		OffScreen2 = new BufferedImage(1000, 850, BufferedImage.TYPE_INT_RGB);
@@ -596,7 +596,7 @@ public class Battlefield extends JFrame {
 		f.setSize(1000, 900);
 		f.setVisible(true);
 		f.gameperpare();
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//关闭游戏
 	}
 
 	class Drawer extends Thread {
