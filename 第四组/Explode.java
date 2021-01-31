@@ -2,7 +2,6 @@ import java.awt.*;
 import java.awt.image.*;
 import java.awt.geom.*;
 import java.io.*;
-
 public class Explode implements Serializable  {
 	int eX,eY;
 	int eWidth,eHeight;

@@ -5,55 +5,56 @@ import java.io.*;
 import java.util.*;
 
 public class Accessory implements Serializable {
-	int aX, aY;
-	int aWidth = 50, aHeight = 50;
-	int speed = 1;
+	int aX,aY;
+	int aWidth,aHeight;
+	int speed=1;
 	int typeint;
-	int life = 50;
-	int Xoffset = 0;
+	int life=50;
+	int Xoffset=0;
 	int intervel;
-	int count = 0;
+	int count=0;
 	int aimage;
-	static Image aimage1, aimage2, aimage3, aimage4, aimage5, aimage6;
-	//³õÊ¼»¯£¬×ø±ê¡¢´óÐ¡¡¢Ëæ»úµÀ¾ß
-	public Accessory() {
-		aX = getRandomIntNum(50, 950);
-		aY = 30;
-		typeint = getRandomIntNum(0, 6);
-		if (typeint == 1)
-			aimage = 1;
-		if (typeint == 2)
-			aimage = 2;
-		if (typeint == 3)
-			aimage = 3;
-		if (typeint == 4)
-			aimage = 4;
-		if (typeint == 5)
-			aimage = 5;
-		if (typeint == 6)
-			aimage = 6;
+	static Image aimage1,aimage2,aimage3,aimage4,aimage5,aimage6;
+	public Accessory(){
+		  aX=getRandomIntNum(50,950);		
+		  aY=30;
+		  aWidth=32;
+		  aHeight=32;
+		  typeint=getRandomIntNum(0,6);
+		  if (typeint==1) aimage=1;
+		  if (typeint==2) aimage=2;
+		  if (typeint==3) aimage=3;
+		  if (typeint==4) aimage=4;
+		  if (typeint==5) aimage=5;
+		  if (typeint==6) aimage=6;
 	}
-
-	public boolean hit(Airplane p) {
-		if ((aX < p.pX + p.pWidth) && (p.pX < aX + aWidth) && (aY < p.pY + p.pHeight) && (p.pY < aY + aHeight)) {
-			life -= 30;
-			p.life -= 30;
+	public boolean hit(Bullet b){
+		if ((aX<b.bX) && (b.bX<aX+aWidth) && (aY<b.bY) && (b.bY<aY+aHeight)){
+			life-=20;
 			return true;
-		} else
-			return false;
-
+		} else return false;
+			
 	}
-
-	public int getRandomIntNum(int a, int b) {
-		Random random = new Random();
-		int c = random.nextInt();
-//	ÕâÀïÓÃµ½ÁËRandomÀïµÄnextInt()·½·¨£¬Õâ¸ö·½·¨»áËæ»ú²úÉúÒ»¸ö int ÐÍµÄÊý£»
-		if (c < 0) {
-			c = -c;
-		}
-		int d = ((c % (b - a)) + a + 1);
-//	ÕâÀïÊÇÈÃ±äÁ¿d±ä³ÉaºÍbÖ®ÖÐµÄÊý£¬ % ÊÇÈ¡ÓàÔËËã£¬ÇëÈÏÕæµÄ¶ÁÕß×Ô¼ºËãÒ»ÏÂ£»
-		return d;
+	public boolean hit(Airplane p){
+		if ((aX-+aWidth<p.pX) && (p.pX<aX+aWidth) && (aY<p.pY) && (p.pY<aY+aHeight)){
+			life-=30;
+			p.life-=30;
+			return true;
+		} else return false;
+		
+	}	
+	public int getRandomIntNum(int a, int b)
+	{
+	  Random random = new Random();
+	  int c = random.nextInt();
+//	ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½Randomï¿½ï¿½ï¿½nextInt()ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ int ï¿½Íµï¿½ï¿½ï¿½ï¿½ï¿½
+	  if(c<0)
+	  {
+	    c = -c ;
+	  }
+	  int d = ((c %(b-a)) + a + 1);
+//	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã±ï¿½ï¿½ï¿½dï¿½ï¿½ï¿½aï¿½ï¿½bÖ®ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½ % ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ã£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½Ò»ï¿½Â£ï¿½
+	return d;
 
 	}
 }

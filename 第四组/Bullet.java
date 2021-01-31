@@ -2,36 +2,31 @@ import java.awt.*;
 import java.awt.image.*;
 import java.awt.geom.*;
 import java.io.*;
-
 public class Bullet implements Serializable {
-	int bX, bY;
-	int bWidth = 50, bHeight = 50;
-	int speed = 5;
+	int bX,bY;
+	int bWidth,bHeight;
+	int speed=5;
 	transient Image bimage;
-
-	public Bullet(int x, int y) {
+	public Bullet(int x,int y,int w,int h){
 		super();
-		bX = x;
-		bY = y;
+		  bX=x;
+		  bY=y;
+		  bWidth=w;
+		  bHeight=h;
 	}
-
-	public void hit() {
-
+	public void hit(){
+		
 	}
-
-	public void moveToTop() {
-
+	public void moveToTop(){
+		
 	}
-
-	public void moveToBottom() {
-
+	public void moveToBottom(){
+		
 	}
-
-	public void moveToleft() {
-
+	public void moveToleft(){
+		
 	}
-
-	public void moveToRihgt() {
-
+	public void moveToRihgt(){
+		
 	}
 }
